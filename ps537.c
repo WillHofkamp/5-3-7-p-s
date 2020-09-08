@@ -4,7 +4,13 @@
 * This method will loop through all the pids and print out a process status for each process
 */
 void printStatus(int *pid, int stateInformationFlag, int userTimeFlag, int systemTimeFlag, int virtualMemoryFlag, int commandLineFlag) {
+   char stateInfoChar[];
+   char userTime[];
+   char systemTime[];
+   char virtualMemory[];
+   char commandLine[];
   for (int i = 0; i < (pid size); ++i) {
+	char processStatus[] = 
 	if(stateInformationFlag) {
 	    //char stateInfoChar = find way to get the single-character state information about the process. This information is found in the stat file in
 	    //process's directory, looking at the third ("state") field. Note that the information that you read from the stat file is a charcter string.
@@ -27,6 +33,8 @@ void printStatus(int *pid, int stateInformationFlag, int userTimeFlag, int syste
 	    //commandLine = find way to get the command-line that started this program. This information is found in the cmdline file in process's directory.
 	    //Be careful on this one, because this file contains a list of null (zero byte) terminated strings.
 	}
+	// when making the strings, need to remember to add a space to the end of each one
+	printf("%s: %s\n", pid[i], + stateInfoChar + userTime + systemTime + virtualMemory + commandLine);
   }
 }
 
@@ -73,5 +81,5 @@ int main(int argc, char **argv) {
 	    commandLineFlag = 0;	
 	}
     }
-    printStatus(pid, stateInformation, userTime, systemTime, virtualMemory, commandLineFlag);
+    printStatus(pid, stateInformationFlag, userTimeFlag, systemTimeFlag, virtualMemoryFlag, commandLineFlag);
 }
