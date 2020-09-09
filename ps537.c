@@ -1,40 +1,56 @@
-#include <stdio.h>
+#include<stdio.h>
 
 /*
 * This method will loop through all the pids and print out a process status for each process
 */
 void printStatus(int *pid, int stateInformationFlag, int userTimeFlag, int systemTimeFlag, int virtualMemoryFlag, int commandLineFlag) {
-   char stateInfoChar[];
-   char userTime[];
-   char systemTime[];
-   char virtualMemory[];
-   char commandLine[];
+
   for (int i = 0; i < (pid size); ++i) {
-	char processStatus[] = 
+	char processStatus[];
+	char state;
+	long size;
+	unsigned long userTime;
+	unsigned long systemTime;
+	char commandLine[1024];
 	if(stateInformationFlag) {
 	    //char stateInfoChar = find way to get the single-character state information about the process. This information is found in the stat file in
 	    //process's directory, looking at the third ("state") field. Note that the information that you read from the stat file is a charcter string.
-	    //This option defaults to false aka 0 
+	    //This option defaults to false aka 0
+		FILE *fp = fopen("/proc/"+pid[i]+"/stat", "r");
+		fscanf(fp, "%c", &state);
+		fclose(fp); 
 	}
 	if(userTimeFlag) {
 	    //userTime = find way to display the amount of user time consumed by this process. This information is found in the stat file in process's directory,
-            //looking at the "utime" field. This option defaults to true aka 1	
+        //looking at the "utime" field. This option defaults to true aka 1
+		FILE *fp = fopen("/proc/"+pid[i]+"/stat", "r");
+		fscanf(fp, "%lu", &userTime);
+		fclose(fp);	
 	}
 	if(systemTimeFlag) {
 	    //systemTime = find way to get the amount of system time consumed so far by this process.
 	    //this information is found in the stat file in process's directory, looking at the "stime" field.
-            //this option defaults to false aka 0
+        //this option defaults to false aka 0
+		FILE *fp = fopen("/proc/"+pid[i]+"/stat", "r");
+		fscanf(fp, "%lu", &systemTime);
+		fclose(fp);
 	}
 	if(virtualMemoryFlag) {
 	    //virtualMemory = find way to get the amount of virtual memory currently being used (in pages) by this program. This information is 
-	    //found in the statm file in process's directory, looking at first ("size") field. This option defaults to false aka 0 	
+	    //found in the statm file in process's directory, looking at first ("size") field. This option defaults to false aka 0
+		FILE *fp = fopen("/proc/"+pid[i]+"/statm", "r");
+		fscanf(fp, "%ld", &size);
+		fclose(fp); 	
 	}
 	if(commandLineFlag) {
 	    //commandLine = find way to get the command-line that started this program. This information is found in the cmdline file in process's directory.
 	    //Be careful on this one, because this file contains a list of null (zero byte) terminated strings.
+		FILE *fp = fopen("/proc/"+pid[i]+"/cmdline", "r");
+		fgets(commandLine, sizeof commandLine, fp);
+		fclose(fp);
 	}
 	// when making the strings, need to remember to add a space to the end of each one
-	printf("%s: %s\n", pid[i], + stateInfoChar + userTime + systemTime + virtualMemory + commandLine);
+	printf("%s: %s\n", pid[i], + state + userTime + systemTime + size + commandLine);
   }
 }
 
