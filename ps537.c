@@ -70,10 +70,17 @@ int main(int argc, char **argv) {
     for (int i = 0; i < argc; ++i) {
 	if(i = 1) {
 	    if(argv[1] == "-p") {
-		pid[1] = argv[1];
+		pid[1] = argv[2];
 	    } else {
-	  	//pid[] = get all current user process's pids and put in array
-	    }
+	  		//pid[] = get all current user process's pids and put in array
+
+			//get the current user id from the passwd file
+	    	struct passwd *p = getpwuid(getuid());
+			char userId[];
+			if(p) {
+				userId = p->pw_name;
+			}
+		}
 	}
 	else if(argv[i] == "-s") {
             //enables displaying the single char state information
@@ -95,6 +102,10 @@ int main(int argc, char **argv) {
 	else if(argv[i] == "-c-") {
 	    //disables displaying of the command line of the process
 	    commandLineFlag = 0;	
+	}
+	else {
+		//TODO: figure out correct way to exit program when invalid command is entered e.g. "-f"
+		exit();
 	}
     }
     printStatus(pid, stateInformationFlag, userTimeFlag, systemTimeFlag, virtualMemoryFlag, commandLineFlag);
