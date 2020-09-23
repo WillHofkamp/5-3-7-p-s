@@ -43,7 +43,6 @@ int isInt(char *arg){
 // those processes in an array and returns that array
 char ** readInListOfPIDs(){
 
-
 	DIR *dp;
 	struct dirent *entry;
 	char *pid;
@@ -75,28 +74,27 @@ char ** readInListOfPIDs(){
 			strcat(filePath, status);
 			
 			// creates object from the stat file	
-			FILE *status_file;
-			status_file = fopen(filePath, read);
+			FILE *statFile;
+			statFile = fopen(filePath, read);
 			free(filePath);
-			if (status_file == 0){
+
+			if (statFile == 0){
 				// process doesn't belong to current user, ignore
 			}else{
-				char *statusParse;
-				statusParse = (char *) calloc(BUFFER, sizeof(char *));
-				int uidNext = 0;
-				while ((fscanf(status_file,"%s",statusParse)) == 1){
-
-					if(uidNext){
-						// get uid
-						processUserID = atoi(statusParse);
+				char *statParse;
+				statParse = (char *) calloc(BUFFER, sizeof(char *));
+				int isUIDNext = 0;
+				while ((fscanf(statFile,"%s",statParse)) == 1){
+					if(isUIDNext){
+						// get uid if it's the next line
+						processUserID = atoi(statParse);
 						break;
 					}
-					if(strcmp(statusParse, "Uid:") == 0){
-						uidNext = 1;
+					if(strcmp(statParse, "Uid:") == 0){
+						isUIDNext = 1;
 					}
-
 				}
-				free(statusParse);
+				free(statParse);
 				// if uid matches add it to the array
 				if (userUserID == processUserID) {
 						*(listOfPIDs+count) = pid;
@@ -104,7 +102,7 @@ char ** readInListOfPIDs(){
 						count++;
 				}
 			}
-			fclose(status_file);	
+			fclose(statFile);	
 		}
 	}
 	return listOfPIDs;
