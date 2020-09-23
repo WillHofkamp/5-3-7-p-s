@@ -3,19 +3,19 @@ CFLAGS = -Wall -pedantic
 OBJECTS = main.o parseService.o printService.o readerService.o
 
 main: $(OBJECTS)
- $(CC) $(CFLAGS) -o 537ps $(OBJECTS)
+	$(CC) $(CFLAGS) -o 537ps $(OBJECTS)
 
 main.o: main.c parseService.h printService.h
- $(CC) $(CFLAGS) -c 537ps.c
+	$(CC) $(CFLAGS) -c 537ps.c
 
 printService.o: printService.c printService.h readerService.h parseService.h
- $(CC) $(CFLAGS) -c printService.c
+	$(CC) $(CFLAGS) -c printService.c
 
 readerService.o: readerService.c readerService.h
- $(CC) $(CFLAGS) -c readerService.c
+	$(CC) $(CFLAGS) -c readerService.c
 
 parseService.o: parseService.c parseService.h
- $(CC) $(CFLAGS) -c parseService.c
+	$(CC) $(CFLAGS) -c parseService.c
 
 clean:
- rm -f $(OBJECTS) main
+	rm -f $(OBJECTS) main

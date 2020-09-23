@@ -24,5 +24,5 @@ int main(int argc, char *argv[]){
 		// null error, command line args weren't loaded correctly
 		return -1;
 	}
-	printProcesses(args);
+	int print = printProcesses(args);
 }
