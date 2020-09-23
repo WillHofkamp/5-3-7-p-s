@@ -28,7 +28,7 @@ static const char *read = "r";
 // This method retrieves the information that will be printed for the PID
 // based off of the flags that were parsed from the command line.
 // Returns 0 if a success and -1 if error
-int printProcesses(CmdLineArgDto *options, char *pID){
+int printProcesses(cmdLineArgs *options, char *pID){
 
 	// initialize variables that will be printed
 	char stateInfo = '\0';
