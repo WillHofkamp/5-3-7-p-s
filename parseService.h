@@ -23,8 +23,6 @@ typedef struct{
   char *pID;
 } CmdLineArgDto;
 
-int isInt(char *argument);
-
 CmdLineArgDto* parseCommandLine(int argc, char *argv[]);
 
 #endif

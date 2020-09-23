@@ -13,31 +13,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
-#include <ctype.h>
 #include "parseService.h"
-
-// This method is used as a way to validate that a char* pid is actually an int
-int isInt(char *arg){
-	int i = 0;
-	// test that each character in the string is a digit
-	while(*(arg+i) != '\0'){
-		if(!(isdigit(*(arg+i))) ){
-			// isn't a number
-			return 0;
-		}
-		i++;
-	}
-	// is a number
-	return 1;
-}
 
 // This method goes through each command line arg and checks if it matches up 
 // to one of the possible commands, and then sets the designated flag for that
 // as well as retrieving a possible process id.
 CmdLineArgDto * parseCommandLine(int argc, char *argv[]){
-
-	// set the string of options that are valid. Used as argument for getopt() func
-	const char *commands =  "p::s::U::S::v::c::";
   
 	// hold the selected option
 	int option;
@@ -62,36 +43,27 @@ CmdLineArgDto * parseCommandLine(int argc, char *argv[]){
 	char *pID = NULL;
 
 	int i = 0;
-	while(i < argc){
+	for(int i = 0; i < argc; i++) {
 		// get options from the command line
-		option = getopt (argc, argv, commands);
+		option = getopt (argc, argv, "p::s::U::S::v::c::");
+		// checks that option was rendered correctly
 		if(option != -1){
-			switch(option)
-			{
-
 			// -p option
-			case 'p':
+			if(option == 'p') {
 				//test that there is an extra hyphen
 				if((optarg != NULL) && (strcmp(optarg, "-") == 0)){
 					// -p- option
 					pFlag = 0;
 				}else if((optarg != NULL)){
 					//test that the extra argument is a number
-					if(isInt(optarg)){
 						pID = optarg;
 						pFlag = 1;
-					}else{
-						printf("ERROR: Process ID list syntax error\n");
-						// error
-						return NULL;
-					}
 	  			}else{
 	    				pFlag = 1;
 				}
-	  			break;
-
+			}
 			// -s option
-			case 's':
+			else if(option == 's') {
 				if((optarg != NULL) && (strcmp(optarg, "-") == 0)){
 					// -s- option
 					lSFlag = 0;
@@ -102,10 +74,9 @@ CmdLineArgDto * parseCommandLine(int argc, char *argv[]){
 				}else{
 					lSFlag = 1;
 				}
-				break;
-
+			}
 			// -U option
-			case 'U':
+			else if(option == 'U') {
 				if((optarg != NULL) && (strcmp(optarg, "-") == 0)){
 					// -U- option
 					uFlag = 0;
@@ -116,10 +87,9 @@ CmdLineArgDto * parseCommandLine(int argc, char *argv[]){
 				}else{
 					uFlag = 1;
 				}
-				break;
-
+			}
 			// -S option
-			case 'S':
+			else if(option == 'S') {
 				if((optarg != NULL) && (strcmp(optarg, "-") == 0)){
 					// -S- option
 					uSFlag = 0;
@@ -130,10 +100,9 @@ CmdLineArgDto * parseCommandLine(int argc, char *argv[]){
 				}else{
 					uSFlag = 1;
 				}
-				break;
-
+			}
 			// -v option
-			case 'v':
+			else if(option == 'v') {
 				if((optarg != NULL) && (strcmp(optarg, "-") == 0)){
 					// -v- option
 					vFlag = 0;
@@ -144,10 +113,9 @@ CmdLineArgDto * parseCommandLine(int argc, char *argv[]){
 				}else{
 					vFlag = 1;
 				}
-				break;
-
+			}
 			// -c option
-			case 'c':
+			else if(option == 'c') {
 				if((optarg != NULL) && (strcmp(optarg, "-") == 0)){
 					// -c- option
 					cFlag = 0;
@@ -158,21 +126,12 @@ CmdLineArgDto * parseCommandLine(int argc, char *argv[]){
 				}else{
 					cFlag = 1;
 				}
-				break;
-
-			// bad input  
-			case '?':
+			} else if(option == '?') {
 				printf("ERROR: Process ID list syntax error\n");
-				// error
 				return NULL;
-				break;
-
-			default:
-			break;
 			}
-		numOptions++;
 		}
-		i++;
+		numOptions++;
 	}
 
 	// count the number of arguments left that aren't options
@@ -180,13 +139,7 @@ CmdLineArgDto * parseCommandLine(int argc, char *argv[]){
 	// there should only be the pid that isn't an option, if it exists
 	if(numNonOptions == 1){
 		// check it's number
-		if(isInt(argv[optind])){
-			pID = argv[optind];
-		}else{
-			printf("ERROR: Process ID is not valid.\n");
-			// error
-			return NULL;
-		}
+		pID = argv[optind];
 	}else if(numNonOptions > 1){
 		printf("ERROR: Only one id can be specified when using -p.\n");
 		// error
@@ -206,3 +159,4 @@ CmdLineArgDto * parseCommandLine(int argc, char *argv[]){
 
 	return cmdLineArguments;
 }
+

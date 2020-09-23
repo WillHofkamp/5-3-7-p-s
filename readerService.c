@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include "parseService.h"
+#include <ctype.h>
 #include "readerService.h"
 
 static const int MAX_IDS = 600;
@@ -23,6 +23,20 @@ static const int BUFFER= 300;
 static const char *proc = "/proc/";
 static const char *status = "/status";
 
+// This method is used as a way to validate that a char* pid is actually an int
+int isInt(char *arg){
+	int i = 0;
+	// test that each character in the string is a digit
+	while(*(arg+i) != '\0'){
+		if(!(isdigit(*(arg+i))) ){
+			// isn't a number
+			return 0;
+		}
+		i++;
+	}
+	// is a number
+	return 1;
+}
 
 // This method reads through the list of processes in /proc,
 // checks which ones belong to the current user, and then stores
@@ -50,7 +64,7 @@ char ** readInListOfPIDs(){
 	while((entry = readdir(dp)) != NULL){
 
 		// if the dirent struct holds the pid in d_name
-		if(isNumber(entry->d_name)){
+		if(isInt(entry->d_name)){
 			pid = entry->d_name;
 
 			// create filepath to check uid
@@ -85,7 +99,6 @@ char ** readInListOfPIDs(){
 				free(statusParse);
 				// if uid matches add it to the array
 				if (userUserID == processUserID) {
-						printf("pid = %s\n",pid);
 						*(listOfPIDs+count) = pid;
 						// keep an index of pid
 						count++;

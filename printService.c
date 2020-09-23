@@ -52,8 +52,8 @@ int printProcesses(CmdLineArgDto *options, char *pID){
 	FILE *statFile;
 	statFile = fopen(statPath, read);
 	free(statPath);
+	//check if statfile is loaded 
 	if (statFile == 0){
-		//fopen returns 0, the NULL pointer, on failure
 		perror("ERROR: Cannot open stat file of current pid\n");
 		free(currPidPath);
 		return -1;
@@ -61,8 +61,10 @@ int printProcesses(CmdLineArgDto *options, char *pID){
 		char *statParse;
 		statParse = (char *) calloc(BUFFER, sizeof(char));
 		int i = 0;
-		while ((fscanf(statFile,"%s",statParse)) == 1){
-
+		for(int i=0; i<= 15; i++) {
+			if(!(fscanf(statFile,"%s",statParse)) == 1) {
+				break;
+			}
 			// get status
 			if(i == 2){
 				stateInfo = statParse[0];
@@ -78,7 +80,6 @@ int printProcesses(CmdLineArgDto *options, char *pID){
 				systemTime = atoi(statParse);
 				break;
 			}
-			i++;
 		}
 		free(statParse);
 		fclose(statFile);
@@ -86,7 +87,7 @@ int printProcesses(CmdLineArgDto *options, char *pID){
 	
 	
 	// -s option
-	if(options->lowsFlag){
+	if(options->lSFlag){
 		// print state information char
 		printf("%c ", stateInfo);
 	}
@@ -124,11 +125,8 @@ int printProcesses(CmdLineArgDto *options, char *pID){
 			char *statmParse;
 			statmParse = (char *) calloc(BUFFER, sizeof(char));
 			int i = 0;
-			while ((fscanf(statm_file,"%s",statmParse)) == 1){
-				if(i == 0){
-					size = atoi(statmParse);
-					break;
-				}
+			if((fscanf(statm_file,"%s",statmParse)) == 1) {
+				size = atoi(statmParse);
 			}
 			free(statmParse);
 			fclose(statm_file);
@@ -143,7 +141,7 @@ int printProcesses(CmdLineArgDto *options, char *pID){
 		cmdlinePath = calloc((sizeof(cmdline) + sizeof(currPidPath)), sizeof(char));
 		strcat(cmdlinePath,currPidPath);
 		strcat(cmdlinePath,cmdline);
-
+		//load in the command line file
 		FILE *cmdline_file;
 		cmdline_file = fopen(cmdlinePath, read);
 		free(cmdlinePath);
@@ -155,10 +153,8 @@ int printProcesses(CmdLineArgDto *options, char *pID){
 		}else{
 			char *cmdLineParse;
 			cmdLineParse = calloc((BUFFER*2), sizeof(char));
-			while ((fscanf(cmdline_file,"%s",cmdLineParse)) == 1){
-				// cmd line value is the first value
+			if((fscanf(cmdline_file,"%s",cmdLineParse)) == 1){
 				printf("[%s]", cmdLineParse);
-				break;
 			}
 			free(cmdLineParse);
 			fclose(cmdline_file);

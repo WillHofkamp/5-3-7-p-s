@@ -40,24 +40,20 @@ int main(int argc, char *argv[]){
 		}else{
 			// if -p exists there must be pid with it
 			printf("ERROR: No PID.\n");
-			// error
 			return -1;
 		}
 		
 	// otherwise print out information for all processes
-	}else if(!cmdLineArgs->pFlag){
+	}else {
 		// get a list of all valid process ids to print
 		char ** pIDList = readInListOfPIDs();
-
-		// index for cycling through the pointer to char pointers
 		int i = 0;
 		// go through the list of pids
-		while(*(pIDList+i) != NULL){
+		while(*(pIDList+i) != NULL) {
 			// print individual process id
 			printf("%s: ",*(pIDList+i));
 			// print the process info
 			if(printProcesses(cmdLineArgs, *(pIDList+i))){
-				// error
 				printf("\n");
 				return -1;
 			}

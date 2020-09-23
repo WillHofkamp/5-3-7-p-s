@@ -11,7 +11,7 @@ main.o: main.c parseService.h printService.h readerService.h
 printService.o: printService.c printService.h readerService.h parseService.h
  $(CC) $(CFLAGS) -c printService.c
 
-readerService.o: readerService.c readerService.h parseService.h
+readerService.o: readerService.c readerService.h
  $(CC) $(CFLAGS) -c readerService.c
 
 parseService.o: parseService.c parseService.h
