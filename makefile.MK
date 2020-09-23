@@ -5,7 +5,7 @@ OBJECTS = main.o parseService.o printService.o readerService.o
 main: $(OBJECTS)
  $(CC) $(CFLAGS) -o 537ps $(OBJECTS)
 
-main.o: main.c parseService.h printService.h readerService.h
+main.o: main.c parseService.h printService.h
  $(CC) $(CFLAGS) -c 537ps.c
 
 printService.o: printService.c printService.h readerService.h parseService.h

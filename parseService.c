@@ -20,9 +20,8 @@
 // as well as retrieving a possible process id.
 cmdLineArgs * parse(int argc, char *argv[]){
   
-	// variable for the chosen option from the command line
-	int option;
-	int argsCount = 0;
+	// variable for the chosen command from the command line
+	int command;
  
 	// flags to keep track which of the commands were selected
 	//-p
@@ -42,100 +41,68 @@ cmdLineArgs * parse(int argc, char *argv[]){
 
 	int i = 0;
 	for(int i = 0; i < argc; i++) {
-		// get options from the command line
-		option = getopt (argc, argv, "p::s::U::S::v::c::");
-		if(option != -1){
-			argsCount++;
-			// -p option
-			if(option == 'p') {
+		// get options from the command line, possible commands are p, s, U, S, v, and c
+		command = getopt (argc, argv, "p::s::U::S::v::c::");
+		if(command != -1){
+			// -p command
+			if(command == 'p') {
 				//checking for the hyphen
-				argsCount++;
 				if(optarg != NULL){
-					// -p- option
-					if(strcmp(optarg, "-" ) == 0){
-						pFlag = 0;
-					}
-				    else{
 					//checking that the optional argument has been provided
-						pID = optarg;
-						pFlag = 1;
-	  			}}
-				else{
-					printf("No argument provided");
-	    			pFlag = 1;
+					pID = optarg;
+					pFlag = 1;
+				} else {
+					printf("ERROR: -p command is present but no PID is supplied\n");
+					return NULL;
 				}
 			}
-			// -s option
-			else if(option == 's') {
-				if(optarg != NULL){
-					if(strcmp(optarg, "-") == 0){
-						lSFlag = 0;
-					}
-			        else{
-						printf("ERROR: Invalid argument\n");
-						return NULL;
-					}
+			// -s command
+			else if(command == 's') {
+				//checks if there is a dash after the command
+				if(optarg != NULL && strcmp(optarg, "-") == 0){
+					lSFlag = 0;
 				}else{
 					lSFlag = 1;
 				}
 			}
-			// -U option
-			else if(option == 'U') {
-				if(optarg != NULL){
-					if(strcmp(optarg, "-") == 0){
-						uFlag = 0;
-					}
-			        else{
-						printf("ERROR: Invalid argument\n");
-						return NULL;
-					}
+			// -U command
+			else if(command == 'U') {
+				//checks if there is a dash after the command
+				if(optarg != NULL && strcmp(optarg, "-") == 0){
+					uFlag = 0;
 				}else{
 					uFlag = 1;
 				}
 			}
-			// -S option
-			else if(option == 'S') {
-				if(optarg != NULL){
-					if(strcmp(optarg, "-") == 0){
-						uSFlag = 0;
-					}
-			        else{
-						printf("ERROR: Invalid argument\n");
-						return NULL;
-					}
+			// -S command
+			else if(command == 'S') {
+				//checks if there is a dash after the command
+				if(optarg != NULL && strcmp(optarg, "-") == 0){
+					uSFlag = 0;
 				}else{
 					uSFlag = 1;
 				}
 			}
-			// -v option
-			else if(option == 'v') {
-				if(optarg != NULL){
-					if(strcmp(optarg, "-") == 0){
-						vFlag = 0;
-					}
-			        else{
-						printf("ERROR: Invalid argument\n");
-						return NULL;
-					}
+			// -v command
+			else if(command == 'v') {
+				//checks if there is a dash after the command
+				if(optarg != NULL && strcmp(optarg, "-") == 0){
+					vFlag = 0;
 				}else{
 					vFlag = 1;
 				}
 			}
-			// -c option
-			else if(option == 'c') {
-				if(optarg != NULL){
-					if(strcmp(optarg, "-") == 0){
-						cFlag = 0;
-					}
-			        else{
-						printf("ERROR: Invalid argument\n");
-						return NULL;
-					}
+			// -c command
+			else if(command == 'c') {
+				//checks if there is a dash after the command
+				if(optarg != NULL && strcmp(optarg, "-") == 0){
+					cFlag = 0;
 				}else{
 					cFlag = 1;
 				}
 			} 
-			else if(option == '?') {
+			else if(command == '?') {
+				//if arg is not in list of possible commands
 				printf("ERROR: Process ID list syntax error\n");
 				return NULL;
 			}
@@ -143,14 +110,7 @@ cmdLineArgs * parse(int argc, char *argv[]){
 		else{
 			break;
 		}
-		//argsCount++;
 	}
-
-	// check the total number of arguments given
-	if(argc > argsCount){
-		printf("Invalid number of arguments\n");
-	}
-	
 
 	// construct dto and set values
 	cmdLineArgs *cmdLineArguments;
