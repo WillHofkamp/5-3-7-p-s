@@ -151,7 +151,7 @@ cmdLineArgs * parse(int argc, char *argv[]){
 	if(argc > argsCount){
 		printf("Invalid number of arguments\n")
 	}
-	}
+	
 
 	// construct dto and set values
 	cmdLineArgs *cmdLineArguments;
