@@ -1,3 +1,4 @@
+  
 ////////////////////////////////////////////////////////////////////////////////
 // Main File: main.c
 // This File: main.c
@@ -19,20 +20,20 @@
 // the relevant information
 int main(int argc, char *argv[]){
   
-	CmdLineArgDto *cmdLineArgs = parseCommandLine(argc,argv);
-	if(cmdLineArgs == NULL){
+	cmdLineArgs *args = parse(argc,argv);
+	if(args == NULL){
 		// null error, cmd line args weren't loaded correctly
 		return -1;
 	}
 
 	// check if printing out information for a single process
-	if(cmdLineArgs->pFlag){
+	if(args->pFlag){
 
-		if(cmdLineArgs->pID != NULL){
+		if(args->pID != NULL){
 			// print the pid
-			printf("%s: ",cmdLineArgs->pID);
+			printf("%s: ",args->pID);
 			// print the info related to the process
-			if(printProcesses(cmdLineArgs, cmdLineArgs->pID)){
+			if(printProcesses(args, args->pID)){
 				// error happened while printing
 				printf("\n");
 				return -1;
@@ -53,7 +54,7 @@ int main(int argc, char *argv[]){
 			// print individual process id
 			printf("%s: ",*(pIDList+i));
 			// print the process info
-			if(printProcesses(cmdLineArgs, *(pIDList+i))){
+			if(printProcesses(args, *(pIDList+i))){
 				printf("\n");
 				return -1;
 			}
