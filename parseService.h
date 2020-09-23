@@ -12,7 +12,7 @@
 #ifndef PARSE_SERVICE
 #define PARSE_SERVICE
 
-// struct that keeps track of which options were selected as well as the process id
+// to keep track of the selected options and the process id
 typedef struct{
   int pFlag;
   int lSFlag;
@@ -21,8 +21,8 @@ typedef struct{
   int vFlag;
   int cFlag;
   char *pID;
-} CmdLineArgDto;
+} cmdLineArgs;
 
-CmdLineArgDto* parseCommandLine(int argc, char *argv[]);
+cmdLineArgs* parse(int argc, char *argv[]);
 
 #endif
