@@ -68,17 +68,17 @@ int printProcess(cmdLineArgs *options, char *pID){
 			if(!(fscanf(statFile,"%s",statParse)) == 1) {
 				break;
 			}
-			// get status
+			// get status info
 			if(i == 2){
 				stateInfo = statParse[0];
 			}
 
-			// get u time
+			// get u time info
 			if(i == 13){
 				userTime = atoi(statParse);
 			}
 
-			// get s time
+			// get s time info
 			if(i == 14){
 				systemTime = atoi(statParse);
 				break;
@@ -89,24 +89,6 @@ int printProcess(cmdLineArgs *options, char *pID){
 	}
 	
 	
-	// -s option
-	if(options->lSFlag){
-		// print state information char
-		printf("%c ", stateInfo);
-	}
-
-	// -U option
-	if(options->uFlag){
-		// print user time
-		printf("utime=%lu ", userTime); 
-	}
-
-	// -S option
-	if(options->uSFlag){
-		// print stime
-		printf("stime=%lu ", systemTime);
-	}
-
 	// -v option
 	if(options->vFlag){
 		//create statm file path string through concatenation
@@ -162,6 +144,25 @@ int printProcess(cmdLineArgs *options, char *pID){
 			fclose(cmdLineFile);
 		}
 	}
+	
+	// -s option
+	if(options->lSFlag){
+		// print state information char
+		printf("%c ", stateInfo);
+	}
+
+	// -U option
+	if(options->uFlag){
+		// print user time
+		printf("utime=%lu ", userTime); 
+	}
+
+	// -S option
+	if(options->uSFlag){
+		// print stime
+		printf("stime=%lu ", systemTime);
+	}
+	
 	free(currPidPath);
 	printf("\n");
 	return 0;
