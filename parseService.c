@@ -148,7 +148,7 @@ cmdLineArgs * parse(int argc, char *argv[]){
 
 	// check the total number of arguments given
 	if(argc > argsCount){
-		printf("Invalid number of arguments\n")
+		printf("Invalid number of arguments\n");
 	}
 	
 
