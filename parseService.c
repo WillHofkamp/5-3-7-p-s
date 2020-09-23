@@ -154,8 +154,8 @@ cmdLineArgs * parse(int argc, char *argv[]){
 	}
 
 	// construct dto and set values
-	CmdLineArgs *cmdLineArguments;
-	cmdLineArguments = (CmdLineArgs*) calloc(1, sizeof(pID)+sizeof(CmdLineArgs));
+	cmdLineArgs *cmdLineArguments;
+	cmdLineArguments = (cmdLineArgs*) calloc(1, sizeof(pID)+sizeof(cmdLineArgs));
 	cmdLineArguments->pFlag = pFlag;
 	cmdLineArguments->lSFlag = lSFlag;
 	cmdLineArguments->uFlag = uFlag;
