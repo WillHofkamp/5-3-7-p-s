@@ -57,17 +57,17 @@ cmdLineArgs * parse(int argc, char *argv[]){
 					}
 				    else{
 					//checking that the optional argument has been provided
-						pID = atoi(optarg);
+						pID = optarg;
 						pFlag = 1;
 	  			}}
 				else{
-					printf("No argument provided")
+					printf("No argument provided");
 	    			pFlag = 1;
 				}
 			}
 			// -s option
 			else if(option == 's') {
-				if((optarg != NULL){
+				if(optarg != NULL){
 					if(strcmp(optarg, "-") == 0){
 						lSFlag = 0;
 					}
@@ -81,7 +81,7 @@ cmdLineArgs * parse(int argc, char *argv[]){
 			}
 			// -U option
 			else if(option == 'U') {
-				if((optarg != NULL){
+				if(optarg != NULL){
 					if(strcmp(optarg, "-") == 0){
 						uFlag = 0;
 					}
@@ -95,7 +95,7 @@ cmdLineArgs * parse(int argc, char *argv[]){
 			}
 			// -S option
 			else if(option == 'S') {
-				if((optarg != NULL){
+				if(optarg != NULL){
 					if(strcmp(optarg, "-") == 0){
 						uSFlag = 0;
 					}
@@ -106,11 +106,10 @@ cmdLineArgs * parse(int argc, char *argv[]){
 				}else{
 					uSFlag = 1;
 				}
-				}
 			}
 			// -v option
 			else if(option == 'v') {
-				if((optarg != NULL){
+				if(optarg != NULL){
 					if(strcmp(optarg, "-") == 0){
 						vFlag = 0;
 					}
@@ -124,7 +123,7 @@ cmdLineArgs * parse(int argc, char *argv[]){
 			}
 			// -c option
 			else if(option == 'c') {
-				if((optarg != NULL){
+				if(optarg != NULL){
 					if(strcmp(optarg, "-") == 0){
 						cFlag = 0;
 					}
@@ -135,8 +134,8 @@ cmdLineArgs * parse(int argc, char *argv[]){
 				}else{
 					cFlag = 1;
 				}
-
-			} else if(option == '?') {
+			} 
+			else if(option == '?') {
 				printf("ERROR: Process ID list syntax error\n");
 				return NULL;
 			}
