@@ -23,7 +23,7 @@ static const char *proc = "/proc/";
 static const char *stat = "/stat";
 static const char *statm = "/statm";
 static const char *cmdline = "/cmdline";
-static const char *read = "r";
+
 
 // This method retrieves the information that will be printed for the PID
 // based off of the flags that were parsed from the command line.
@@ -50,7 +50,7 @@ int printProcess(cmdLineArgs *options, char *pID){
 
 	// open the stat file
 	FILE *statFile;
-	statFile = fopen(statPath, read);
+	statFile = fopen(statPath, "r");
 	free(statPath);
 
 	if (statFile == 0){
@@ -98,7 +98,7 @@ int printProcess(cmdLineArgs *options, char *pID){
 
 		//open the statm file
 		FILE *statmFile;
-		statmFile = fopen(statmPath, read);
+		statmFile = fopen(statmPath, "r");
 		free(statmPath);
 
 		if (statmFile == 0){
@@ -127,7 +127,7 @@ int printProcess(cmdLineArgs *options, char *pID){
 
 		//open the command line file
 		FILE *cmdLineFile;
-		cmdLineFile = fopen(cmdLinePath, read);
+		cmdLineFile = fopen(cmdLinePath, "r");
 		free(cmdLinePath);
 
 		if (cmdLineFile == 0){
@@ -193,7 +193,7 @@ int printProcesses(cmdLineArgs *args) {
 	// otherwise print out information for all processes
 	}else {
 		// get a list of all valid process ids to print
-		char ** pIDList = readInListOfPIDs();
+		char ** pIDList = readPIDs();
 		int i = 0;
 		// go through the list of pids
 		while(*(pIDList+i) != NULL) {
