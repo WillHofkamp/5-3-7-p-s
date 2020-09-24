@@ -22,19 +22,6 @@
 static const char *proc = "/proc/";
 static const char *status = "/status";
 
-// This method is used as a way to validate that a char* pid is actually an int
-int isInt(char *arg){
-	int i = 0;
-	// test that each character in the string is a digit
-	while(*(arg+i) != '\0'){
-		if(!(isdigit(*(arg+i))) ){
-			return 0;
-		}
-		i++;
-	}
-	return 1;
-}
-
 // Find the processes in /proc which belong to the current user,
 // and return them in an array
 char ** readPIDs(){
@@ -57,7 +44,7 @@ char ** readPIDs(){
 	// iterate through proc directory
 	while((entry = readdir(procDirectory)) != NULL){
 
-		if(isInt(entry->d_name)){
+		if(isdigit(entry->d_name)){
 			pid = entry->d_name;
 
 			// creating a filepath to check the uid
