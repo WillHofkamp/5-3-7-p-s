@@ -1,14 +1,15 @@
 CC = gcc
 CFLAGS = -Wall -pedantic
+OBJECTS = main.o printService.o parseService.o readerService.o
 
-main: main.o parseService.o printService.o readerService.o
-	$(CC) $(CFLAGS) -o main main.o parseService.o printService.o readerService.o
-main.o: main.c parseService.h printService.h
+main: $(OBJECTS)
+	$(CC) $(CFLAGS) -o main $(OBJECTS)
+main.o: main.c printService.h parseService.h
 	$(CC) $(CFLAGS) -c main.c
-parseService.o: parseService.c parseService.h printService.h readerService.h
-	$(CC) $(CFLAGS) -c parseService.c
-printService.o: printService.c printService.h
+printService.o: printService.c printService.h parseService.h readerService.h
 	$(CC) $(CFLAGS) -c printService.c
+parseService.o: parseService.c parseService.h 
+	$(CC) $(CFLAGS) -c parseService.c
 readerService.o: readerService.c readerService.h
 	$(CC) $(CFLAGS) -c readerService.c
 

@@ -19,10 +19,11 @@
 static const int BUFFER = 1000;
 
 // file path variables
-static const char *proc = "/proc/";
-static const char *stat = "/stat";
-static const char *statm = "/statm";
-static const char *cmdline = "/cmdline";
+static const char *PROC = "/proc/";
+static const char *STAT = "/stat";
+static const char *STATM = "/statm";
+static const char *CMDLINE = "/cmdline";
+static const char *READ = "r";
 
 
 // This method retrieves the information that will be printed for the PID
@@ -38,19 +39,19 @@ int printProcess(cmdLineArgs *options, char *pID){
 
 	//create pid file path string through concatenation
 	char *currPidPath;
-	currPidPath = (char *) calloc((sizeof(proc)+sizeof(pID)), sizeof(char));
-	strcat(currPidPath, proc);
+	currPidPath = (char *) calloc((sizeof(PROC)+sizeof(pID)), sizeof(char));
+	strcat(currPidPath, PROC);
 	strcat(currPidPath, pID);
 
 	//create stat file path string through concatenationd
 	char *statPath;
-	statPath = (char *) calloc((sizeof(stat) + sizeof(currPidPath)), sizeof(char));
+	statPath = (char *) calloc((sizeof(STAT) + sizeof(currPidPath)), sizeof(char));
 	strcat(statPath,currPidPath);
-	strcat(statPath,stat);
+	strcat(statPath,STAT);
 
 	// open the stat file
 	FILE *statFile;
-	statFile = fopen(statPath, "r");
+	statFile = fopen(statPath, READ);
 	free(statPath);
 
 	if (statFile == 0){
@@ -60,12 +61,11 @@ int printProcess(cmdLineArgs *options, char *pID){
 	}else{
 		char *statParse;
 		statParse = (char *) calloc(BUFFER, sizeof(char));
-		int i = 0;
 		//iterate over the stat file to get the status, u time, and s time.
 		//since the file format is the same each time, a for loop and set numbers are used
 		for(int i=0; i<= 15; i++) {
 			//check that the next line of the file was scanned correctly
-			if(!(fscanf(statFile,"%s",statParse)) == 1) {
+			if((!(fscanf(statFile,"%s",statParse))) == 1) {
 				break;
 			}
 			// get status info
@@ -88,63 +88,6 @@ int printProcess(cmdLineArgs *options, char *pID){
 		fclose(statFile);
 	}
 	
-	
-	// -v option
-	if(options->vFlag){
-		//create statm file path string through concatenation
-		char *statmPath = (char *) calloc((sizeof(statm) + sizeof(currPidPath)), sizeof(char));
-		strcat(statmPath,currPidPath);
-		strcat(statmPath,statm);
-
-		//open the statm file
-		FILE *statmFile;
-		statmFile = fopen(statmPath, "r");
-		free(statmPath);
-
-		if (statmFile == 0){
-			perror("ERROR: Cannot open statm file\n");
-			free(currPidPath);
-			return -1;
-		}else{
-			char *statmParse = (char *) calloc(BUFFER, sizeof(char));
-			int i = 0;
-			//parse statm file and get the first line
-			if((fscanf(statmFile,"%s",statmParse)) == 1) {
-				size = atoi(statmParse);
-			}
-			free(statmParse);
-			fclose(statmFile);
-		}
-		printf("vmemory=%d ",size);
-	}
-
-	// -c option
-	if(options->cFlag){
-		//create command line file path string through concatenation
-		char *cmdLinePath = calloc((sizeof(cmdline) + sizeof(currPidPath)), sizeof(char));
-		strcat(cmdLinePath,currPidPath);
-		strcat(cmdLinePath,cmdline);
-
-		//open the command line file
-		FILE *cmdLineFile;
-		cmdLineFile = fopen(cmdLinePath, "r");
-		free(cmdLinePath);
-
-		if (cmdLineFile == 0){
-			perror("ERROR: Cannot open cmdline file\n");
-			free(currPidPath);
-			return -1;
-		}else{
-			char *cmdLineParse = calloc((BUFFER*2), sizeof(char));
-			//parse command line file and print the first line
-			if((fscanf(cmdLineFile,"%s",cmdLineParse)) == 1){
-				printf("[%s]", cmdLineParse);
-			}
-			free(cmdLineParse);
-			fclose(cmdLineFile);
-		}
-	}
-	
 	// -s option
 	if(options->lSFlag){
 		// print state information char
@@ -161,6 +104,61 @@ int printProcess(cmdLineArgs *options, char *pID){
 	if(options->uSFlag){
 		// print stime
 		printf("stime=%lu ", systemTime);
+	}
+
+	// -v option
+	if(options->vFlag){
+		//create statm file path string through concatenation
+		char *statmPath = (char *) calloc((sizeof(STATM) + sizeof(currPidPath)), sizeof(char));
+		strcat(statmPath,currPidPath);
+		strcat(statmPath,STATM);
+
+		//open the statm file
+		FILE *statmFile;
+		statmFile = fopen(statmPath, READ);
+		free(statmPath);
+
+		if (statmFile == 0){
+			perror("ERROR: Cannot open statm file\n");
+			free(currPidPath);
+			return -1;
+		}else{
+			char *statmParse = (char *) calloc(BUFFER, sizeof(char));
+			//parse statm file and get the first line
+			if((fscanf(statmFile,"%s",statmParse)) == 1) {
+				size = atoi(statmParse);
+			}
+			free(statmParse);
+			fclose(statmFile);
+		}
+		printf("vmemory=%d ",size);
+	}
+
+	// -c option
+	if(options->cFlag){
+		//create command line file path string through concatenation
+		char *cmdLinePath = calloc((sizeof(CMDLINE) + sizeof(currPidPath)), sizeof(char));
+		strcat(cmdLinePath,currPidPath);
+		strcat(cmdLinePath,CMDLINE);
+
+		//open the command line file
+		FILE *cmdLineFile;
+		cmdLineFile = fopen(cmdLinePath, READ);
+		free(cmdLinePath);
+
+		if (cmdLineFile == 0){
+			perror("ERROR: Cannot open cmdline file\n");
+			free(currPidPath);
+			return -1;
+		}else{
+			char *cmdLineParse = calloc((BUFFER*2), sizeof(char));
+			//parse command line file and print the first line
+			if((fscanf(cmdLineFile," %s",cmdLineParse)) == 1){
+				printf("[%s]", cmdLineParse);
+			}
+			free(cmdLineParse);
+			fclose(cmdLineFile);
+		}
 	}
 	
 	free(currPidPath);
@@ -208,4 +206,5 @@ int printProcesses(cmdLineArgs *args) {
 		}
 
 	}
+	return 0;
 }

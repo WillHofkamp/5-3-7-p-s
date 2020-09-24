@@ -39,10 +39,9 @@ cmdLineArgs * parse(int argc, char *argv[]){
 	// if no process id is given in the command line arguments
 	char *pID = NULL;
 
-	int i = 0;
 	for(int i = 0; i < argc; i++) {
 		// get options from the command line, possible commands are p, s, U, S, v, and c
-		command = getopt (argc, argv, "p::s::U::S::v::c::");
+		command = getopt (argc, argv, "p: s:: U:: S:: v:: c::");
 		if(command != -1){
 			// -p command
 			if(command == 'p') {

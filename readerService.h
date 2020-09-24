@@ -11,6 +11,8 @@
 #ifndef READER_SERVICE
 #define READER_SERVICE
 
+int isInt(char *arg);
+
 char ** readPIDs();
 
 #endif
