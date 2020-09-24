@@ -13,6 +13,6 @@
 
 int isInt(char *arg);
 
-char ** readInListOfPIDs();
+char ** readPIDs();
 
 #endif
