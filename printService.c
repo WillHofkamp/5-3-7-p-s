@@ -18,40 +18,32 @@
 
 static const int BUFFER = 1000;
 
-// file path variables
-static const char *PROC = "/proc/";
-static const char *STAT = "/stat";
-static const char *STATM = "/statm";
-static const char *CMDLINE = "/cmdline";
-static const char *READ = "r";
-
-
 // This method retrieves the information that will be printed for the PID
 // based off of the flags that were parsed from the command line.
 // Returns 0 if a success and -1 if error
-int printProcess(cmdLineArgs *options, char *pID){
+int printProcess(cmdLineArgs *args, char *pID){
 
 	// initialize variables that will be printed
 	char stateInfo = '\0';
-	unsigned long int userTime = 0;
-	unsigned long int systemTime = 0;
+	int userTime = 0;
+	int systemTime = 0;
 	int size = 0;
 
 	//create pid file path string through concatenation
 	char *currPidPath;
-	currPidPath = (char *) calloc((sizeof(PROC)+sizeof(pID)), sizeof(char));
-	strcat(currPidPath, PROC);
+	currPidPath = (char *) calloc((sizeof("/proc/")+sizeof(pID)), sizeof(char));
+	strcat(currPidPath, "/proc/");
 	strcat(currPidPath, pID);
 
 	//create stat file path string through concatenationd
 	char *statPath;
-	statPath = (char *) calloc((sizeof(STAT) + sizeof(currPidPath)), sizeof(char));
+	statPath = (char *) calloc((sizeof("/stat") + sizeof(currPidPath)), sizeof(char));
 	strcat(statPath,currPidPath);
-	strcat(statPath,STAT);
+	strcat(statPath,"/stat");
 
 	// open the stat file
 	FILE *statFile;
-	statFile = fopen(statPath, READ);
+	statFile = fopen(statPath, "r");
 	free(statPath);
 
 	if (statFile == 0){
@@ -87,35 +79,44 @@ int printProcess(cmdLineArgs *options, char *pID){
 		free(statParse);
 		fclose(statFile);
 	}
+
+	// -c option
+	if(args->cFlag){
+		//create command line file path string through concatenation
+		char *cmdLinePath = calloc((sizeof("/cmdline") + sizeof(currPidPath)), sizeof(char));
+		strcat(cmdLinePath,currPidPath);
+		strcat(cmdLinePath,"/cmdline");
+
+		//open the command line file
+		FILE *cmdLineFile;
+		cmdLineFile = fopen(cmdLinePath, "r");
+		free(cmdLinePath);
+
+		if (cmdLineFile == 0){
+			perror("ERROR: Cannot open cmdline file\n");
+			free(currPidPath);
+			return -1;
+		}else{
+			char *cmdLineParse = calloc((BUFFER*2), sizeof(char));
+			//parse command line file and print the first line
+			if((fscanf(cmdLineFile," %s",cmdLineParse)) == 1){
+				printf("[%s]", cmdLineParse);
+			}
+			free(cmdLineParse);
+			fclose(cmdLineFile);
+		}
+	}
 	
-	// -s option
-	if(options->lSFlag){
-		// print state information char
-		printf("%c ", stateInfo);
-	}
-
-	// -U option
-	if(options->uFlag){
-		// print user time
-		printf("utime=%lu ", userTime); 
-	}
-
-	// -S option
-	if(options->uSFlag){
-		// print stime
-		printf("stime=%lu ", systemTime);
-	}
-
-	// -v option
-	if(options->vFlag){
+    // -v option
+	if(args->vFlag){
 		//create statm file path string through concatenation
-		char *statmPath = (char *) calloc((sizeof(STATM) + sizeof(currPidPath)), sizeof(char));
+		char *statmPath = (char *) calloc((sizeof("/statm") + sizeof(currPidPath)), sizeof(char));
 		strcat(statmPath,currPidPath);
-		strcat(statmPath,STATM);
+		strcat(statmPath,"/statm");
 
 		//open the statm file
 		FILE *statmFile;
-		statmFile = fopen(statmPath, READ);
+		statmFile = fopen(statmPath, "r");
 		free(statmPath);
 
 		if (statmFile == 0){
@@ -134,32 +135,25 @@ int printProcess(cmdLineArgs *options, char *pID){
 		printf("vmemory=%d ",size);
 	}
 
-	// -c option
-	if(options->cFlag){
-		//create command line file path string through concatenation
-		char *cmdLinePath = calloc((sizeof(CMDLINE) + sizeof(currPidPath)), sizeof(char));
-		strcat(cmdLinePath,currPidPath);
-		strcat(cmdLinePath,CMDLINE);
-
-		//open the command line file
-		FILE *cmdLineFile;
-		cmdLineFile = fopen(cmdLinePath, READ);
-		free(cmdLinePath);
-
-		if (cmdLineFile == 0){
-			perror("ERROR: Cannot open cmdline file\n");
-			free(currPidPath);
-			return -1;
-		}else{
-			char *cmdLineParse = calloc((BUFFER*2), sizeof(char));
-			//parse command line file and print the first line
-			if((fscanf(cmdLineFile," %s",cmdLineParse)) == 1){
-				printf("[%s]", cmdLineParse);
-			}
-			free(cmdLineParse);
-			fclose(cmdLineFile);
-		}
+	// -s option
+	if(args->lSFlag){
+		// print state information char
+		printf("%c ", stateInfo);
 	}
+
+	// -U option
+	if(args->uFlag){
+		// print user time
+		printf("utime=%lu ", userTime); 
+	}
+
+	// -S option
+	if(args->uSFlag){
+		// print stime
+		printf("stime=%lu ", systemTime);
+	}
+
+	
 	
 	free(currPidPath);
 	printf("\n");
@@ -169,15 +163,15 @@ int printProcess(cmdLineArgs *options, char *pID){
 // This method prints out either one process or all the current
 // user processes based on args that were parsed from the command
 // line. A -1 is returned if there's an error
-int printProcesses(cmdLineArgs *args) {
+int printProcesses(cmdLineArgs *arguments) {
 	// check if printing out information for a single process
-	if(args->pFlag){
+	if(arguments->pFlag){
 
-		if(args->pID != NULL){
+		if(arguments->pID != NULL){
 			// print the pid
-			printf("%s: ",args->pID);
+			printf("%s: ",arguments->pID);
 			// print the info related to the process
-			if(printProcess(args, args->pID)){
+			if(printProcess(arguments, arguments->pID)){
 				// error happened while printing
 				printf("\n");
 				return -1;
@@ -198,7 +192,7 @@ int printProcesses(cmdLineArgs *args) {
 			// print individual process id
 			printf("%s: ",*(pIDList+i));
 			// print the process info
-			if(printProcess(args, *(pIDList+i))){
+			if(printProcess(arguments, *(pIDList+i))){
 				printf("\n");
 				return -1;
 			}
