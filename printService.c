@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Main File: main.c
+// Main File: 537.c
 // This File: parser.c
 // This File Description: This is the print service which prints out information
 //						  about one or multiple processes based on the flags set
@@ -25,8 +25,8 @@ int printProcess(cmdLineArgs *args, char *pID){
 
 	// initialize variables that will be printed
 	char stateInfo = '\0';
-	int userTime = 0;
-	int systemTime = 0;
+	long unsigned int userTime = 0;
+	long unsigned int systemTime = 0;
 	int size = 0;
 
 	//create pid file path string through concatenation
