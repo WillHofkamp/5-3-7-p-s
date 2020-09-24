@@ -16,7 +16,7 @@
 #include <ctype.h>
 #include "readerService.h"
 
-static const int BUFFER= 255;
+#define BUFFER= 255;
 
 //file path variables
 static const char *proc = "/proc/";
@@ -37,7 +37,7 @@ int isInt(char *arg){
 
 // Find the processes in /proc which belong to the current user,
 // and return them in an array
-char ** readInListOfPIDs(){
+char ** readPIDs(){
 
 	DIR *procDirectory;
 	struct dirent *entry;
