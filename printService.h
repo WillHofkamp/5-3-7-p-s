@@ -13,8 +13,8 @@
 #ifndef PRINT_SERVICE
 #define PRINT_SERVICE
 
-int printProcess(cmdLineArgs *options, char *pID);
+int printProcess(cmdLineArgs *args, char *pID);
 
-int printProcesses(cmdLineArgs *options);
+int printProcesses(cmdLineArgs *arguments);
 
 #endif
