@@ -18,10 +18,6 @@
 
 static const int BUFFER = 255;
 
-//file path variables
-static const char *PROC = "/proc/";
-static const char *STATUS = "/status";
-
 // This method is used as a way to validate that a char* pid is actually an int
 int isInt(char *arg){
 	int i = 0;
@@ -43,8 +39,6 @@ char ** readPIDs(){
 	struct dirent *entry;
 	char *pid;
 	int processUserID = 0;
-
-	int userUserID = getuid();
 	
 	// Check to see if the directory exists
 	if ((procDirectory = opendir("/proc")) == NULL){
@@ -52,28 +46,26 @@ char ** readPIDs(){
 		return NULL;
 	}
 	int count = 0;
-	char ** listOfPIDs;
-	listOfPIDs = (char **) calloc((BUFFER*600), sizeof(char *));
+	char ** pidList;
+	pidList = (char **) calloc((BUFFER*600), sizeof(char *));
 	// iterate through proc directory
 	while((entry = readdir(procDirectory)) != NULL){
 
-		if(isInt(entry->d_name)){
+		if(entry->d_type == DT_DIR && isInt(entry->d_name)){
 			pid = entry->d_name;
 
 			// creating a filepath to check the uid
 			char *filePath;
-			filePath = calloc((sizeof(PROC)+sizeof(pid)+sizeof(STATUS)), sizeof(char));
-			strcat(filePath, PROC);
+			filePath = calloc((sizeof("/proc/")+sizeof(pid)+sizeof("/status")), sizeof(char));
+			strcat(filePath, "/proc/");
 			strcat(filePath, pid);
-			strcat(filePath, STATUS);
+			strcat(filePath, "/status");
 				
 			FILE *statFile;
 			statFile = fopen(filePath, "r");
 			free(filePath);
 
-			if (statFile == 0){
-				// process doesn't belong to current user, ignore
-			}else{
+			if (statFile != 0){
 				char *statParse;
 				statParse = (char *) calloc(BUFFER, sizeof(char *));
 				int isUIDNext = 0;
@@ -89,13 +81,13 @@ char ** readPIDs(){
 				}
 				free(statParse);
 				// if uid matches add it to the array
-				if (userUserID == processUserID) {
-						*(listOfPIDs+count) = pid;
+				if (getuid() == processUserID) {
+						*(pidList+count) = pid;
 						count++;
 				}
 			}
 			fclose(statFile);	
 		}
 	}
-	return listOfPIDs;
+	return pidList;
 }
